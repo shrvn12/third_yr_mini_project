@@ -1,0 +1,421 @@
+/* =========================
+   BASE / RESET
+========================= */
+
+:root {
+  --primary:         #1f205b;
+  --accent:          #ff9800;
+  --accent-gradient: linear-gradient(90deg, #1ea8ff, #7466ff);
+  --bg:              #f5f4e2;
+  --card-bg:         #ffffff;
+  --text-main:       #1f245d;
+  --text-muted:      #5e6f96;
+
+  --sidebar-w:  260px;   /* FIX 3: fixed px instead of 25vw */
+
+  --radius-lg:  24px;
+  --radius-md:  16px;
+  --radius-sm:  12px;
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,.06);
+}
+
+/* FIX 8: clamp-based root size instead of hard 16px */
+html { font-size: clamp(14px, 1vw + 10px, 16px); }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.app-shell {
+  display: flex;          /* FIX 1: was commented out — sidebar & content never aligned */
+  min-height: 100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: var(--sidebar-w);  /* FIX 3: use token, not 25vw */
+  background: var(--primary);
+  color: #fff;
+  padding: 24px 16px;
+
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  padding: 0 8px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.brand h1 span { color: #ffb41f; }
+
+.brand p {
+  margin: 6px 0 0;
+  font-size: .8rem;
+  color: #b9bfd9;
+}
+
+.nav-group {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.nav-group small {
+  font-size: .7rem;
+  letter-spacing: .15em;
+  color: #7b82ae;
+  margin: 10px 8px 4px;
+  display: block;
+}
+
+.nav-item {
+  display: block;
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: #cad0ea;
+  transition: all .2s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+}
+
+/* FIX 5: use .router-link-active (not exact-active) so child routes
+   like /lessons/1 still highlight the Lessons nav item */
+.nav-item.router-link-active {
+  background: var(--accent-gradient);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(30,168,255,.3);
+}
+
+/* Home is exact-only so / doesn't highlight everything */
+a[href="/"].nav-item { }
+a[href="/"].nav-item.router-link-exact-active {
+  background: var(--accent-gradient);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(30,168,255,.3);
+}
+a[href="/"].nav-item.router-link-active:not(.router-link-exact-active) {
+  background: none;
+  color: #cad0ea;
+  box-shadow: none;
+}
+
+/* =========================
+   USER CARD  (FIX 6: new — was missing entirely)
+========================= */
+
+.user-card {
+  margin-top: auto;         /* push to bottom of sidebar */
+  padding: 14px;
+  background: rgba(255,255,255,.07);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ec4899, #f59e0b);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; min-width: 0; }
+
+.user-name {
+  margin: 0;
+  font-weight: 800;
+  font-size: .875rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-meta {
+  margin: 2px 0 6px;
+  font-size: .75rem;
+  color: rgba(255,255,255,.45);
+}
+
+.user-bar {
+  height: 4px;
+  background: rgba(255,255,255,.12);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.user-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #22c55e, #0ea5e9);
+}
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.content {
+  margin-left: var(--sidebar-w);  /* FIX 3: match sidebar token */
+  flex: 1;
+  min-width: 0;  /* prevent flex blowout */
+  /* FIX 2: padding intentionally left to each view — they each manage their own spacing */
+}
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+
+.page-title {
+  font-size: 2.25rem;
+  margin: 0 0 8px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0 0 24px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  background:
+    radial-gradient(circle at 70% 10%, rgba(255,171,76,.25), transparent 30%),
+    linear-gradient(105deg, #28236b, #091445);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hero h2 {
+  font-size: 2rem;
+  margin: 0 0 10px;
+  font-weight: 800;
+}
+
+.hero p {
+  font-size: 1rem;
+  max-width: 600px;
+  color: #c8cfff;
+  margin: 0 0 16px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font: 700 .9rem/1 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #11195e;
+}
+
+.btn.primary:hover { transform: translateY(-2px); }
+
+.btn.ghost {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,.2);
+}
+
+/* =========================
+   GRID STATS
+========================= */
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.stat {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border-bottom: 4px solid #22a3f6;
+  box-shadow: var(--shadow-soft);
+}
+
+.stat h3 {
+  font-size: .875rem;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.stat .num {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 8px 0 4px;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.cards-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.card-cover {
+  height: 140px;    /* reduced from 180px — was too tall */
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+}
+
+.card-body {
+  padding: 18px 20px;
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.card p {
+  margin: 0 0 12px;
+  font-size: .9rem;
+  color: var(--text-muted);
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  font-size: .7rem;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress {
+  height: 8px;
+  background: #e8edf6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress > span {
+  display: block;        /* was already here — keep it */
+  height: 100%;
+  background: linear-gradient(90deg, #22b5ff, #6a54f9);
+  border-radius: 999px;
+}
+
+/* =========================
+   PANEL  (used in several views)
+========================= */
+
+.panel {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* =========================
+   RESPONSIVE  (FIX 7: proper cascade, not just width shrink)
+========================= */
+
+@media (max-width: 1200px) {
+  :root { --sidebar-w: 220px; }
+
+  .grid-4  { grid-template-columns: repeat(2, 1fr); }
+  .cards-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 860px) {
+  :root { --sidebar-w: 0px; }
+
+  .sidebar {
+    display: none;   /* hidden on mobile — add a hamburger in App.vue for full mobile support */
+  }
+
+  .content { margin-left: 0; }
+
+  .grid-4  { grid-template-columns: repeat(2, 1fr); }
+  .cards-3 { grid-template-columns: 1fr; }
+
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .page-title { font-size: 1.75rem; }
+}
+
+@media (max-width: 500px) {
+  .grid-4 { grid-template-columns: 1fr; }
+}
