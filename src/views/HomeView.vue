@@ -5,7 +5,7 @@
     <section class="hero">
       <div class="hero-text">
         <p class="hero-eyebrow">🔥 5-day streak — keep it up!</p>
-        <h2>Welcome back, Shravan! 👋</h2>
+        <h2>Welcome back, {{ user?.name || 'there' }}! 👋</h2>
         <p class="hero-sub">
           You're 65% through
           <strong>Unit 3: Loops &amp; Logic</strong> — so close!
@@ -24,25 +24,25 @@
 
       <div class="stat" style="--accent:#0ea5e9">
         <div class="stat-icon">⭐</div>
-        <div class="stat-num">1,240</div>
+        <div class="stat-num">{{ user?.xp || 0 }}</div>
         <div class="stat-label">Total XP Earned</div>
       </div>
 
       <div class="stat" style="--accent:#22c55e">
         <div class="stat-icon">📖</div>
-        <div class="stat-num">18</div>
+        <div class="stat-num">{{ user?.lessonsCompleted || 0 }}</div>
         <div class="stat-label">Lessons Done</div>
       </div>
 
       <div class="stat" style="--accent:#ec4899">
         <div class="stat-icon">🏅</div>
-        <div class="stat-num">7</div>
+        <div class="stat-num">{{ user?.badges?.length || 0 }}</div>
         <div class="stat-label">Badges Earned</div>
       </div>
 
       <div class="stat" style="--accent:#f59e0b">
         <div class="stat-icon">🔥</div>
-        <div class="stat-num">5</div>
+        <div class="stat-num">{{ user?.currentStreak || 0 }}</div>
         <div class="stat-label">Day Streak</div>
       </div>
 
@@ -133,8 +133,19 @@
 </template>
 
 <script>
+import { useUserStore } from '../store/userStore';
+
 export default {
-  name: "HomeView"
+  name: 'HomeView',
+  setup() {
+    const user = useUserStore()?.user;
+    return { user };
+  },
+  data() {
+    return {
+      user: useUserStore()?.user
+    };
+  }
 }
 </script>
 

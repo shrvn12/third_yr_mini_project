@@ -419,3 +419,13 @@ a[href="/"].nav-item.router-link-active:not(.router-link-exact-active) {
 @media (max-width: 500px) {
   .grid-4 { grid-template-columns: 1fr; }
 }
+
+.app-shell.full-screen {
+  display: block;  /* override flex so content fills 100vw */
+}
+ 
+.content.full-screen-content {
+  margin-left: 0;
+  padding: 0;
+  min-height: 100vh;
+}

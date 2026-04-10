@@ -104,7 +104,7 @@
 
           <!-- Empty / pick a quiz -->
           <div v-else class="pick-prompt" key="pick">
-            <span>👈</span>
+            <span>👉🏻</span>
             <p>Pick a quiz from the list to get started!</p>
           </div>
         </Transition>

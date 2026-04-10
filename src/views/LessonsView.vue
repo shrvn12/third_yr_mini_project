@@ -43,7 +43,8 @@
         <!-- Body -->
         <div class="card-body">
           <span class="pill" :style="{ background: l.pillBg, color: l.pillColor }">
-            {{ l.unit }}
+            {{ l.meta.unit }}
+              <!-- unit 3 -->
           </span>
           <h3>{{ l.title }}</h3>
           <p class="meta">⏱ {{ l.time }} &nbsp;·&nbsp; ⭐ {{ l.xp }} XP</p>
@@ -54,7 +55,7 @@
               <span
                 class="progress-fill"
                 :style="{
-                  width: l.progress + '%',
+                  width: (l.progress || 0) + '%',
                   background: l.progress === 100 ? '#22c55e' : 'linear-gradient(90deg,#0ea5e9,#8b5cf6)'
                 }"
               />
@@ -62,7 +63,7 @@
             <span class="progress-label">{{ progressLabel(l) }}</span>
           </div>
 
-          <button class="lesson-btn" :disabled="l.locked">
+          <button class="lesson-btn" :disabled="l.locked" @click="router.push(`/lessons/${l._id}`)">
             {{ l.locked ? 'Locked' : l.progress === 100 ? 'Review' : l.progress > 0 ? 'Continue' : 'Start' }}
           </button>
         </div>
@@ -80,36 +81,73 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import router from '../router'
 
 const tabs = ['All', 'In Progress', 'Completed', 'New']
 const activeTab = ref('All')
 
-const allCards = [
-  { icon: '💻', title: 'What is a Computer?',       unit: 'UNIT 1', time: '15 min', xp: 50,  progress: 100, locked: false, color: 'linear-gradient(135deg,#dbeafe,#c7d2fe)', pillBg: '#dbeafe', pillColor: '#1d4ed8' },
-  { icon: '🌐', title: 'The Internet – What is it?', unit: 'UNIT 1', time: '20 min', xp: 60,  progress: 100, locked: false, color: 'linear-gradient(135deg,#dcfce7,#a7f3d0)', pillBg: '#dcfce7', pillColor: '#15803d' },
-  { icon: '⌨️', title: 'Typing & Keyboard Skills',   unit: 'UNIT 1', time: '25 min', xp: 55,  progress: 100, locked: false, color: 'linear-gradient(135deg,#fce7f3,#fbcfe8)', pillBg: '#fce7f3', pillColor: '#9d174d' },
-  { icon: '🤖', title: 'What is an Algorithm?',      unit: 'UNIT 2', time: '15 min', xp: 60,  progress: 95,  locked: false, color: 'linear-gradient(135deg,#ede9fe,#c7d2fe)', pillBg: '#ede9fe', pillColor: '#7c3aed' },
-  { icon: '🔁', title: 'Sequences – Order Matters!', unit: 'UNIT 2', time: '18 min', xp: 65,  progress: 40,  locked: false, color: 'linear-gradient(135deg,#ffedd5,#fed7aa)', pillBg: '#ffedd5', pillColor: '#c2410c' },
-  { icon: '🔄', title: 'Loops – Repeat After Me!',   unit: 'UNIT 3', time: '20 min', xp: 80,  progress: 65,  locked: false, color: 'linear-gradient(135deg,#fde68a,#fca5a5)', pillBg: '#fef9c3', pillColor: '#92400e' },
-  { icon: '🤔', title: 'If-Else – Making Decisions', unit: 'UNIT 3', time: '18 min', xp: 70,  progress: 0,   locked: false, color: 'linear-gradient(135deg,#d1fae5,#6ee7b7)', pillBg: '#dcfce7', pillColor: '#15803d' },
-  { icon: '📦', title: 'Variables – Keeping Score',  unit: 'UNIT 3', time: '22 min', xp: 90,  progress: 0,   locked: true,  color: 'linear-gradient(135deg,#f1f5f9,#e2e8f0)', pillBg: '#f1f5f9', pillColor: '#64748b' },
-  { icon: '🐍', title: 'Hello, Python!',             unit: 'UNIT 4', time: '20 min', xp: 100, progress: 0,   locked: true,  color: 'linear-gradient(135deg,#f1f5f9,#e2e8f0)', pillBg: '#f1f5f9', pillColor: '#64748b' },
-]
-
-const completed = computed(() => allCards.filter(c => c.progress === 100).length)
+const allCards = ref([])
 
 const filtered = computed(() => {
-  if (activeTab.value === 'Completed')   return allCards.filter(c => c.progress === 100)
-  if (activeTab.value === 'In Progress') return allCards.filter(c => c.progress > 0 && c.progress < 100)
-  if (activeTab.value === 'New')         return allCards.filter(c => c.progress === 0 && !c.locked)
-  return allCards
+  if (activeTab.value === 'Completed')
+    return allCards.value.filter(c => c.progress === 100)
+
+  if (activeTab.value === 'In Progress')
+    return allCards.value.filter(c => c.progress > 0 && c.progress < 100)
+
+  if (activeTab.value === 'New')
+    return allCards.value.filter(c => c.progress === 0 && !c.locked)
+
+  return allCards.value
 })
+
+getCards()
+
+async function getCards() {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/lessons`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    })
+
+    const data = await res.json()
+
+    console.log('Fetched lessons:', data)
+
+    allCards.value.push(
+      ...data.lessons.map(lesson => ({
+        icon: lesson.icon || '📘',
+        _id: lesson._id,
+        title: lesson.title,
+        // unit: `UNIT ${lesson.unit}`,
+        time: `${lesson.duration} min`,
+        xp: lesson.xp,
+        progress: lesson.progress,
+        locked: lesson.locked,
+        color: 'linear-gradient(135deg,#dbeafe,#c7d2fe)',
+        pillBg: '#dbeafe',
+        pillColor: '#1d4ed8',
+        meta: lesson.meta,
+        unit: lesson.meta.unit.split(".")[0].trim().split(" ")[1].trim(),
+        order: lesson.order
+      }))
+    )
+
+    allCards.value.sort((a,b) => +a.unit - +b.unit);
+
+  } catch (err) {
+    console.error('Error fetching lessons:', err)
+  }
+}
+const completed = computed(() => allCards.value.filter(c => c.progress === 100).length)
+
 
 function progressLabel(l) {
   if (l.locked)           return 'Locked'
   if (l.progress === 100) return 'Done!'
   if (l.progress === 0)   return 'Not started'
-  return `${l.progress}%`
+  return `${l.progress || 0}%`
 }
 </script>
 
