@@ -99,7 +99,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 const STARTER = `# Welcome to the Playground! 🚀
 # Write your Python code here and click Run!
@@ -110,6 +110,11 @@ print("Hello, " + name + "!")
 for i in range(1, 6):
     print("⭐" * i)
 `
+const pyodide = ref(null)
+
+onMounted(async () => {
+  pyodide.value = await window.loadPyodide()
+})
 
 const code    = ref(STARTER)
 const output  = ref('')
@@ -152,33 +157,56 @@ function clearOutput() {
 }
 
 // Simulated Python runner — evaluates a safe subset client-side
-function runCode() {
+// function runCode() {
+//   running.value = true
+//   output.value  = ''
+
+//   setTimeout(() => {
+//     const lines  = []
+//     const src    = code.value
+
+//     // Capture print() calls for a safe preview
+//     const printRe = /print\(([^)]*)\)/g
+//     let match
+//     while ((match = printRe.exec(src)) !== null) {
+//       let arg = match[1].trim()
+//       // strip wrapping quotes for string literals
+//       if ((arg.startsWith('"') && arg.endsWith('"')) ||
+//           (arg.startsWith("'") && arg.endsWith("'"))) {
+//         lines.push(arg.slice(1, -1))
+//       } else {
+//         lines.push(`[evaluates: ${arg}]`)
+//       }
+//     }
+
+//     output.value  = lines.length
+//       ? lines.join('\n')
+//       : '# No output — try adding a print() statement!'
+//     running.value = false
+//   }, 600)
+// }
+
+async function runCode() {
+  if (!pyodide.value) return
   running.value = true
-  output.value  = ''
+  output.value = ''
 
-  setTimeout(() => {
-    const lines  = []
-    const src    = code.value
+  try {
+    // Redirect stdout so print() calls are captured
+    await pyodide.value.runPythonAsync(`
+      import sys, io
+      sys.stdout = io.StringIO()
+    `)
 
-    // Capture print() calls for a safe preview
-    const printRe = /print\(([^)]*)\)/g
-    let match
-    while ((match = printRe.exec(src)) !== null) {
-      let arg = match[1].trim()
-      // strip wrapping quotes for string literals
-      if ((arg.startsWith('"') && arg.endsWith('"')) ||
-          (arg.startsWith("'") && arg.endsWith("'"))) {
-        lines.push(arg.slice(1, -1))
-      } else {
-        lines.push(`[evaluates: ${arg}]`)
-      }
-    }
+    await pyodide.value.runPythonAsync(code.value)
 
-    output.value  = lines.length
-      ? lines.join('\n')
-      : '# No output — try adding a print() statement!'
+    const result = await pyodide.value.runPythonAsync(`sys.stdout.getvalue()`)
+    output.value = result || '# No output — try adding a print() statement!'
+  } catch (err) {
+    output.value = `Error: ${err.message}`
+  } finally {
     running.value = false
-  }, 600)
+  }
 }
 </script>
 

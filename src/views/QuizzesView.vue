@@ -197,8 +197,76 @@ const quizList = ref([
   },
   {
     id: 4, icon: '🐍', name: 'Unit 4 · Python Basics', unit: 'UNIT 4',
-    xpTotal: 200, done: false, locked: true,
-    questions: []
+    xpTotal: 200, done: false, locked: false,
+    questions: [
+      { text: 'What is Python?', options: ['A type of computer hardware', 'A high-level programming language', 'An operating system', 'A database software'], correct: 1, explanation: 'Python is a high-level, beginner-friendly programming language used for web development, data science, automation, and more.' },
+      { text: 'Which of these is the correct way to create a variable in Python?', options: ['var age = 10', 'int age = 10', 'age = 10', 'let age = 10'], correct: 2, explanation: 'Python does not need a keyword to declare variables — you simply write the name, an equals sign, and the value.' },
+      { text: 'What will this code print?\n`print(10 + 5)`', options: ['10 + 5', '"15"', '15', 'Error'], correct: 2, explanation: 'Python evaluates the expression 10 + 5 first, getting 15, then prints the result as a number.' },
+      { text: 'Which of these is a valid string in Python?', options: ['123', 'True', '"hello"', '[1, 2, 3]'], correct: 2, explanation: 'Strings are text values wrapped in quotes. "hello" is a string; 123 is an integer and True is a boolean.' },
+      { text: 'What keyword is used to create a function in Python?', options: ['func', 'define', 'function', 'def'], correct: 3, explanation: 'The `def` keyword is used to define a function in Python, followed by the function name and parentheses.' },
+    ]
+  },
+  {
+    id: 5, icon: '🌐', name: 'Unit 1 · The Internet', unit: 'UNIT 1',
+    xpTotal: 120, done: false, locked: false,
+    questions: [
+      { text: 'What does "IP" stand for in IP address?', options: ['Internet Protocol', 'Internal Processor', 'Internet Provider', 'Input Port'], correct: 0, explanation: 'IP stands for Internet Protocol — a unique address assigned to every device on a network.' },
+      { text: 'Which protocol is used to load websites securely?', options: ['FTP', 'HTTP', 'HTTPS', 'SMTP'], correct: 2, explanation: 'HTTPS (HyperText Transfer Protocol Secure) encrypts data between your browser and the website.' },
+      { text: 'What is a browser?', options: ['A type of internet cable', 'Software to access and view websites', 'A search engine database', 'A computer network'], correct: 1, explanation: 'A browser like Chrome or Firefox is an application that lets you access and view pages on the web.' },
+      { text: 'What does a router do?', options: ['Stores files on the cloud', 'Displays web pages', 'Directs data between devices and the internet', 'Converts text to binary'], correct: 2, explanation: 'A router manages traffic — it sends data packets between your devices and the internet.' },
+    ]
+  },
+  {
+    id: 6, icon: '🔒', name: 'Unit 1 · Digital Safety', unit: 'UNIT 1',
+    xpTotal: 90, done: false, locked: false,
+    questions: [
+      { text: 'What is a strong password?', options: ['Your name and birthday', 'A mix of letters, numbers, and symbols', 'A single dictionary word', 'Your phone number'], correct: 1, explanation: 'Strong passwords combine uppercase, lowercase, numbers, and symbols — making them hard to guess.' },
+      { text: 'What is phishing?', options: ['A way to speed up your computer', 'A method of catching bugs in code', 'A trick to steal your personal info by pretending to be trusted', 'A type of firewall'], correct: 2, explanation: 'Phishing is when attackers disguise themselves as trusted sources to steal passwords or personal data.' },
+      { text: 'Which of these is safest to share online publicly?', options: ['Home address', 'School name', 'Favourite book', 'Phone number'], correct: 2, explanation: 'Favourite books, movies, or hobbies are generally safe. Never share location details or contact info publicly.' },
+      { text: 'What does a firewall do?', options: ['Speeds up your internet', 'Blocks unauthorised access to your network', 'Stores your passwords', 'Fixes broken code'], correct: 1, explanation: 'A firewall monitors incoming and outgoing network traffic and blocks anything that looks suspicious.' },
+    ]
+  },
+  {
+    id: 7, icon: '🗂️', name: 'Unit 2 · Data & Patterns', unit: 'UNIT 2',
+    xpTotal: 110, done: false, locked: false,
+    questions: [
+      { text: 'What is a variable in programming?', options: ['A type of loop', 'A named container that stores a value', 'A kind of error', 'A function that repeats'], correct: 1, explanation: 'A variable is like a labelled box — it holds a value (like a number or word) that your program can use and change.' },
+      { text: 'Which of these best describes "pattern recognition"?', options: ['Memorising all data', 'Finding repeated rules or similarities in problems', 'Writing faster code', 'Deleting duplicates'], correct: 1, explanation: 'Pattern recognition means spotting similarities or repeated structures — a key part of computational thinking.' },
+      { text: 'What data type would you use to store someone\'s age?', options: ['String', 'Boolean', 'Integer', 'Float'], correct: 2, explanation: 'Age is a whole number, so an integer is the right data type. Strings hold text, booleans hold True/False.' },
+      { text: 'What is "abstraction" in computing?', options: ['Writing very long code', 'Hiding unnecessary detail to focus on the important parts', 'Copying code from the internet', 'Running a program faster'], correct: 1, explanation: 'Abstraction means stripping away complexity so you can focus on what actually matters for solving the problem.' },
+    ]
+  },
+  {
+    id: 8, icon: '🧩', name: 'Unit 2 · Problem Solving', unit: 'UNIT 2',
+    xpTotal: 130, done: false, locked: false,
+    questions: [
+      { text: 'What is "debugging"?', options: ['Writing new features', 'Finding and fixing errors in code', 'Running a program for the first time', 'Deleting a program'], correct: 1, explanation: 'Debugging is the process of identifying and fixing bugs (errors) in your code so it works correctly.' },
+      { text: 'In a flowchart, what shape represents a start or end point?', options: ['Rectangle', 'Diamond', 'Parallelogram', 'Oval / rounded rectangle'], correct: 3, explanation: 'Ovals or rounded rectangles mark the start and end of a flowchart — often labelled "Start" or "Stop".' },
+      { text: 'What does "input → process → output" describe?', options: ['A type of variable', 'The basic model of how a computer works', 'A sorting algorithm', 'A data type'], correct: 1, explanation: 'Every computer task follows this model: take input, process it, then produce output.' },
+      { text: 'Which of these is an example of decomposition?', options: ['Writing a poem', 'Breaking "make a game" into art, sound, code, and rules tasks', 'Running a loop 10 times', 'Printing a variable'], correct: 1, explanation: 'Decomposition means splitting a big task into smaller, achievable pieces — exactly like planning a game\'s components.' },
+    ]
+  },
+  {
+    id: 9, icon: '🐍', name: 'Unit 4 · Python Basics', unit: 'UNIT 4',
+    xpTotal: 180, done: false, locked: false,
+    questions: [
+      { text: 'How do you print "Hello" in Python?', options: ['echo "Hello"', 'console.log("Hello")', 'print("Hello")', 'say("Hello")'], correct: 2, explanation: 'Python uses the print() function to display output. The text goes inside quotes inside the parentheses.' },
+      { text: 'Which symbol is used for comments in Python?', options: ['//', '<!-- -->', '#', '**'], correct: 2, explanation: 'The # symbol starts a comment in Python. The interpreter ignores everything after it on that line.' },
+      { text: 'What will `type("hello")` return?', options: ['int', 'str', 'bool', 'list'], correct: 1, explanation: 'The type() function returns the data type. "hello" is text, so Python returns <class \'str\'>.' },
+      { text: 'How do you get input from a user in Python?', options: ['get()', 'scan()', 'input()', 'read()'], correct: 2, explanation: 'The input() function pauses the program and waits for the user to type something, then returns it as a string.' },
+      { text: 'What does this code output?\n`x = 3\nprint(x * 2)`', options: ['x * 2', '32', '6', '23'], correct: 2, explanation: 'x holds the value 3, and 3 * 2 = 6. Python evaluates the expression first, then prints the result.' },
+    ]
+  },
+  {
+    id: 10, icon: '📦', name: 'Unit 4 · Functions & Lists', unit: 'UNIT 4',
+    xpTotal: 200, done: false, locked: false,
+    questions: [
+      { text: 'How do you define a function in Python?', options: ['function myFunc():', 'def myFunc():', 'func myFunc():', 'define myFunc():'], correct: 1, explanation: 'Python uses the `def` keyword to define a function, followed by the name and parentheses.' },
+      { text: 'What is a list in Python?', options: ['A single value', 'An ordered collection of items', 'A type of loop', 'A boolean expression'], correct: 1, explanation: 'A list holds multiple items in order inside square brackets, like fruits = ["apple", "mango", "banana"].' },
+      { text: 'How do you access the first item of a list called `items`?', options: ['items[1]', 'items.first()', 'items[0]', 'items(-1)'], correct: 2, explanation: 'Python lists are zero-indexed — the first item is always at index 0, not index 1.' },
+      { text: 'What does the `return` keyword do in a function?', options: ['Prints the result to screen', 'Stops the program', 'Sends a value back to the caller', 'Repeats the function'], correct: 2, explanation: 'return sends a value back to wherever the function was called from, so it can be used or stored.' },
+      { text: 'Which method adds an item to the end of a list?', options: ['.add()', '.push()', '.append()', '.insert()'], correct: 2, explanation: 'The .append() method adds a new item to the end of an existing list in Python.' },
+    ]
   },
 ])
 

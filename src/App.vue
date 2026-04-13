@@ -17,7 +17,7 @@
 
       <div class="nav-group">
         <small>PLAY</small>
-        <RouterLink to="/games"   class="nav-item">🕹️ Games</RouterLink>
+        <!-- <RouterLink to="/games"   class="nav-item">🕹️ Games</RouterLink> -->
         <RouterLink to="/quizzes" class="nav-item">🧠 Quizzes</RouterLink>
         <RouterLink to="/puzzles" class="nav-item">🧩 Puzzles</RouterLink>
       </div>

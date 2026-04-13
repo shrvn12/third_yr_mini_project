@@ -420,6 +420,12 @@ const lesson  = ref(null)
 const loading = ref(true)
 const error   = ref(null)
 
+const pyodide = ref(null)
+
+onMounted(async () => {
+  pyodide.value = await window.loadPyodide()
+})
+
 async function fetchLesson() {
   loading.value = true
   error.value   = null
@@ -499,23 +505,56 @@ function insertTab(event, idx) {
 }
 
 // FIX: simulate output instead of just console.logging
-function runChallenge(idx, block) {
+// function runChallenge(idx, block) {
+//   const code = challengeCode.value[idx] ?? ''
+//   const lines = []
+//   const printRe = /print\(([^)]*)\)/g
+//   let match
+//   while ((match = printRe.exec(code)) !== null) {
+//     let arg = match[1].trim()
+//     if ((arg.startsWith('"') && arg.endsWith('"')) ||
+//         (arg.startsWith("'") && arg.endsWith("'"))) {
+//       lines.push(arg.slice(1, -1))
+//     } else {
+//       lines.push(`[evaluates: ${arg}]`)
+//     }
+//   }
+//   challengeOutput.value = {
+//     ...challengeOutput.value,
+//     [idx]: lines.length ? lines.join('\n') : '# No output — try adding a print() statement'
+//   }
+// }
+
+async function runChallenge(idx) {
   const code = challengeCode.value[idx] ?? ''
-  const lines = []
-  const printRe = /print\(([^)]*)\)/g
-  let match
-  while ((match = printRe.exec(code)) !== null) {
-    let arg = match[1].trim()
-    if ((arg.startsWith('"') && arg.endsWith('"')) ||
-        (arg.startsWith("'") && arg.endsWith("'"))) {
-      lines.push(arg.slice(1, -1))
-    } else {
-      lines.push(`[evaluates: ${arg}]`)
+  console.log('Running challenge code:', code)
+  if (!pyodide.value) return
+  // running.value = true
+  // output.value = ''
+
+  try {
+    // Redirect stdout so print() calls are captured
+    await pyodide.value.runPythonAsync(`
+      import sys, io
+      sys.stdout = io.StringIO()
+    `)
+
+    await pyodide.value.runPythonAsync(code)
+
+    const result = await pyodide.value.runPythonAsync(`sys.stdout.getvalue()`)
+    const output = result || '# No output — try adding a print() statement!'
+    challengeOutput.value = {
+      ...challengeOutput.value,
+      [idx]: output
     }
-  }
-  challengeOutput.value = {
-    ...challengeOutput.value,
-    [idx]: lines.length ? lines.join('\n') : '# No output — try adding a print() statement'
+  } catch (err) {
+    challengeOutput.value = {
+      ...challengeOutput.value,
+      [idx]: `Error: ${err.message}`
+    }
+    // output.value = `Error: ${err.message}`
+  } finally {
+    // running.value = false
   }
 }
 
